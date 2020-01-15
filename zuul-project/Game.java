@@ -1,3 +1,4 @@
+import java.util.*;
 /**
  *  This class is the main class of the "World of Zuul" application. 
  *  "World of Zuul" is a very simple, text based adventure game.  Users 
@@ -19,7 +20,9 @@ public class Game
 {
     private Parser parser;
     private Room currentRoom;
-        
+    private Stack<Room> roomHistory;
+    private Room previousRoom;
+
     /**
      * Create the game and initialise its internal map.
      */
@@ -27,6 +30,7 @@ public class Game
     {
         createRooms();
         parser = new Parser();
+        roomHistory = new Stack<Room>();
     }
 
     /**
@@ -35,7 +39,7 @@ public class Game
     private void createRooms()
     {
         Room spongebob, patrick, octo, maatemmer, sorbetpartybar, krokantekrab, keukenkrokantekrab;
-      
+
         // create the rooms
         spongebob = new Room("spongebob is the main place of the game");
         patrick = new Room("in Patrick huis");
@@ -44,28 +48,27 @@ public class Game
         sorbetpartybar = new Room("in the Sorbetparybar");
         krokantekrab = new Room("in the Krokantekrab");
         keukenkrokantekrab = new Room("Keuken krokante krab");
-        
-     
+
         // geformuleerd op Noord - Oost - Zuid - West 
         // initialise room exits
-        
+
         spongebob.setExit("north", maatemmer);
         spongebob.setExit("east" , octo);
         spongebob.setExit("south", patrick);
-        
+
         patrick.setExit("north", spongebob);
-  
+
         octo.setExit("north", sorbetpartybar);
         octo.setExit("east", krokantekrab);
         octo.setExit("west", spongebob);
-        
+
         maatemmer.setExit("south", spongebob);
-        
+
         sorbetpartybar.setExit("south", octo);
-        
+
         krokantekrab.setExit("west", octo);
 
-
+        previousRoom = spongebob;
         currentRoom = spongebob;  // start game outside
     }
 
@@ -78,7 +81,7 @@ public class Game
 
         // Enter the main command loop.  Here we repeatedly read commands and
         // execute them until the game is over.
-                
+
         boolean finished = false;
         while (! finished) {
             Command command = parser.getCommand();
@@ -98,21 +101,21 @@ public class Game
         System.out.println("Type 'help' if you need help.");
         System.out.println();
         System.out.println(currentRoom.getLongDescription());
-   
+
     }
-    
+
     /**
      * PrintLocationInfo afzonderlijk
      */
 
- //   private void printLocationInfo()
- //   {
- //       System.out.println("You are " + currentRoom.getShortDescription());
-  //      System.out.println("Exits: " );
- //   
- //         
- //       
- //   }
+    //   private void printLocationInfo()
+    //   {
+    //       System.out.println("You are " + currentRoom.getShortDescription());
+    //      System.out.println("Exits: " );
+    //   
+    //         
+    //       
+    //   }
     /**
      * Given a command, process (that is: execute) the command.
      * @param command The command to be processed.
@@ -143,7 +146,9 @@ public class Game
         else if (commandWord.equals("quit")) {
             wantToQuit = quit(command);
         }
-        
+        else if (commandWord.equals("back")) {
+            goBack();
+        }
 
         return wantToQuit;
     }
@@ -185,7 +190,9 @@ public class Game
             System.out.println("There is no door!");
         }
         else {
+            roomHistory.push(currentRoom);
             currentRoom = nextRoom;
+
             System.out.println("You are " + currentRoom.getLongDescription());
         }
     }
@@ -205,15 +212,25 @@ public class Game
             return true;  // signal that we want to quit
         }
     }
-    
+
     private void look()
     {
-     System.out.println(currentRoom.getLongDescription());
+        System.out.println(currentRoom.getLongDescription());
     }
-    
+
     private void eat()
     {
-      System.out.println("You have eaten now and not hungry anymore");
+        System.out.println("You have eaten now and not hungry anymore");
     }
-    
+
+    private void goBack()
+    {
+        if (roomHistory.empty())
+        { System.out.println("U bent al helemaal terug gegaan.");
+        }
+        else {
+            currentRoom = roomHistory.pop();
+            System.out.println(currentRoom.getLongDescription());
+        }
+    }
 }
