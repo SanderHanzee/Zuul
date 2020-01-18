@@ -1,4 +1,6 @@
 import java.util.*;
+import java.util.HashMap;
+import java.util.ArrayList;
 /**
  *  This class is the main class of the "World of Zuul" application. 
  *  "World of Zuul" is a very simple, text based adventure game.  Users 
@@ -22,7 +24,7 @@ public class Game
     private Room currentRoom;
     private Stack<Room> roomHistory;
     private Room previousRoom;
-
+    ArrayList<Item> inventory = new ArrayList<Item>();  
     /**
      * Create the game and initialise its internal map.
      */
@@ -31,8 +33,8 @@ public class Game
         createRooms();
         parser = new Parser();
         roomHistory = new Stack<Room>();
-    }
 
+    }
     /**
      * Create all the rooms and link their exits together.
      */
@@ -68,8 +70,9 @@ public class Game
 
         krokantekrab.setExit("west", octo);
 
-        previousRoom = spongebob;
-        currentRoom = spongebob;  // start game outside
+        octo.setItem(new Item("keta"));
+
+        currentRoom = spongebob;  // start game in spongebobs house
     }
 
     /**
@@ -149,10 +152,81 @@ public class Game
         else if (commandWord.equals("back")) {
             goBack();
         }
+        else if(commandWord.equals("inventory")) {
+            printInventory();
+        }
+        else if(commandWord.equals("get")) {
+            getItem(command);
+        }
+        else if(commandWord.equals("drop")) {
+            dropItem(command);
+        }
 
         return wantToQuit;
     }
 
+    private void dropItem(Command command) 
+    {
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know where to go...
+            System.out.println("Get what?");
+            return;
+        }
+
+        String item = command.getSecondWord();
+
+        // Try to leave current room.
+        Item newItem = null;
+        int index =0;
+        for(int i=0; i < inventory.size(); i++){
+            if(inventory.get(i).getDescription().equals(item));{
+            newItem = inventory.get(i);
+            index = i;
+            }
+        }
+        if (newItem == null) {
+            System.out.println("that item is not in your inventory");
+        }
+        else {
+            inventory.remove(index);
+            currentRoom.setItem(new Item(item));
+            System.out.println("you dropped " + item);
+             
+        }
+    }
+
+    private void getItem(Command command) 
+    {
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know where to go...
+            System.out.println("Get what?");
+            return;
+        }
+
+        String item = command.getSecondWord();
+
+        // Try to leave current room.
+        Item newItem = currentRoom.getItem(item);
+
+        if (newItem == null) {
+            System.out.println("That item is not in the room");
+        }
+        else {
+            inventory.add(newItem);
+            currentRoom.removeItem(item);
+            System.out.println("you picked up " + item);
+        }
+    }
+
+    public void printInventory()
+    {
+        String output = "";
+        for(int i=0; i < inventory.size(); i++){
+            output += inventory.get(i).getDescription() + " ";  
+        }
+        System.out.println("je hebt bij je");
+        System.out.println(output); 
+    }
     // implementations of user commands:
 
     /**
