@@ -21,7 +21,7 @@ public class Game
     private Parser parser;
     private Room currentRoom;
     private Stack<Room> roomHistory;
-    private Room previousRoom;
+   // private Room previousRoom;
 
     /**
      * Create the game and initialise its internal map.
@@ -68,7 +68,7 @@ public class Game
 
         krokantekrab.setExit("west", octo);
 
-        previousRoom = spongebob;
+       // previousRoom = spongebob;
         currentRoom = spongebob;  // start game outside
     }
 
