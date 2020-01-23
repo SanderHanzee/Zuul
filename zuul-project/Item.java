@@ -7,20 +7,31 @@ import java.util.ArrayList;
  */
 public class Item
 {
-   String description;
-    
-   /**
-    * constructor
-    */
-   public Item(String newdescription)
-   {
-    description = newdescription;
-    
-   }
-   
-   public String getDescription()
-   {
-       return description;
-   }
+    String description;
+    int    weight;
+    String name; 
+    /**
+     * constructor
+     */
+    public Item(String newName, String newDescription, int newWeight)
+    {
+        description = newDescription;
+        weight      = newWeight;
+        name        = newName;
+    }
+
+    public String getItemDescription()
+    {
+        return description;
+    }
+
+    public int getItemWeight()
+    {
+        return weight;
+    }
+    public String getItemName()
+    {
+     return name;    
+    }
 }
 

@@ -23,7 +23,7 @@ public class Game
     private Parser parser;
     private Room currentRoom;
     private Stack<Room> roomHistory;
-    ArrayList<Item> inventory = new ArrayList<Item>();  
+    private HashMap<String , Item> inventory; 
     /**
      * Create the game and initialise its internal map.
      */
@@ -32,7 +32,7 @@ public class Game
         createRooms();
         parser = new Parser();
         roomHistory = new Stack<Room>();
-
+        inventory = new HashMap<String, Item>(); 
     }
 
     /**
@@ -70,7 +70,7 @@ public class Game
 
         krokantekrab.setExit("west", octo);
 
-        octo.setItem(new Item("keta"));
+        octo.setItem(new Item("krik","might be used to ligt something heavy", 5));   
 
         currentRoom = spongebob;  // start game in spongebobs house
     }
@@ -146,23 +146,23 @@ public class Game
             case QUIT:
             wantToQuit = quit(command);
             break;
-            
+
             case LOOK:
             look();
             break;
-            
+
             case BACK:
             goBack();
             break;
-            
+
             case INVENTORY:
             printInventory();
             break;
-            
+
             case GET:
             getItem(command);
             break;
-            
+
             case DROP:
             dropItem(command);
             break;
@@ -201,70 +201,57 @@ public class Game
     }
      */
 
-
     private void dropItem(Command command) 
     {
-        if(!command.hasSecondWord()) {
-            // if there is no second word, we don't know where to go...
-            System.out.println("Get what?");
-            return;
-        }
-
-        String item = command.getSecondWord();
-
-        // Try to leave current room.
-        Item newItem = null;
-        int index =0;
-        for(int i=0; i < inventory.size(); i++){
-            if(inventory.get(i).getDescription().equals(item));{
-                newItem = inventory.get(i);
-                index = i;
+        {
+            if(!command.hasSecondWord()) {
+                // if there is no second word, we don't know what to drop...
+                System.out.println("Wait a minute drop what?");
+                return;
             }
-        }
-        if (newItem == null) {
-            System.out.println("that item is not in your inventory");
-        }
-        else {
-            inventory.remove(index);
-            currentRoom.setItem(new Item(item));
-            System.out.println("you dropped " + item);
 
+            String itemName = command.getSecondWord();
+            Item newItem = inventory.get(itemName);
+            if(newItem == null){
+                System.out.println("You cant drop something what you dont have");
+            }
+            else{
+                inventory.remove(itemName);
+                currentRoom.setItem(newItem); 
+                System.out.println("Dropped: " + itemName); 
+            }
         }
     }
 
     private void getItem(Command command) 
     {
         if(!command.hasSecondWord()) {
-            // if there is no second word, we don't know where to go...
+            // if there is no second word, we don't know what to pickup..
             System.out.println("Get what?");
             return;
         }
 
-        String item = command.getSecondWord();
+        String itemName = command.getSecondWord();
+        Item newItem = currentRoom.getItem(itemName);
 
-        // Try to leave current room.
-        Item newItem = currentRoom.getItem(item);
-
-        if (newItem == null) {
-            System.out.println("That item is not in the room");
+        if(newItem == null){
+            System.out.println("There is no item in this room");
         }
-        else {
-            inventory.add(newItem);
-            currentRoom.removeItem(item);
-            System.out.println("you picked up " + item);
+        else{
+            inventory.put(itemName, newItem);
+            currentRoom.removeItem(itemName);
+            System.out.println("Picked up: " + itemName); 
         }
     }
-
-    public void printInventory()
-    {
+     private void printInventory(){
         String output = "";
-        for(int i=0; i < inventory.size(); i++){
-            output += inventory.get(i).getDescription() + " ";  
+        for(String itemName : inventory.keySet()){
+            output += inventory.get(itemName).getItemName() + " Weight: " + inventory.get(itemName).getItemWeight() + "\n";
         }
-        System.out.println("je hebt bij je");
+        System.out.println("you are carrying:");
         System.out.println(output); 
     }
-    // implementations of user commands:
+    
 
     /**
      * Print out some help information.

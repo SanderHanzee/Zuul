@@ -1,6 +1,7 @@
 import java.util.Set;
 import java.util.HashMap;
 import java.util.ArrayList; 
+import java.util.Iterator;  
 /**
  * Class Room - a room in an adventure game.
  *
@@ -19,7 +20,7 @@ public class Room
 {
     public String description;
     private HashMap<String, Room> exits;
-    ArrayList<Item> items = new ArrayList<Item>(); 
+    private HashMap<String, Item> items; 
 
     /**
      * Create a room described "description". Initially, it has
@@ -31,6 +32,7 @@ public class Room
     {
         this.description = description;
         exits = new HashMap<>();
+        items = new HashMap<>();
     }
 
     /**
@@ -95,50 +97,42 @@ public class Room
 
     }
 
-    /**
-     * gets items from room
-     */
-    public Item getItem(int index)
-    {
-        return items.get(index);    
+
+    public Item getItem(String name){
+        return items.get(name); 
     }
 
-    public Item getItem(String itemName)
-    {
-        for(int i=0; i< items.size(); i++){
-            if(items.get(i).getDescription().equals(itemName)){
-                return items.get(i);
-            }
-        }
-        return null; 
-    }
     public void removeItem(String itemName)
     {
-        for(int i=0; i< items.size(); i++){
-            if(items.get(i).getDescription().equals(itemName)){
-                items.remove(i); 
-            }
-        }
-         
+        items.remove(itemName); 
+
     }
 
     /**
      * sets item to a room
      */
-    public void setItem (Item newitem)
+    public void setItem (Item newItem)
     {
-        items.add(newitem);   
+        items.put(newItem.name, newItem);       
+    }
+
+    
+    public Item getItemValue(String name)
+    {
+        return (Item)items.get(name);
     }
 
     /**
      * gets all the items from a room
      */
-    public String getRoomItems()
-    {
+    public String getRoomItems(){
         String output = "";
-        for(int i=0; i < items.size(); i++){
-            output += items.get(i).getDescription() + " ";  
+        for(String itemName : items.keySet()){
+            output += items.get(itemName).name + " " ;
         }
         return output;
     }
+
+    
+
 }
