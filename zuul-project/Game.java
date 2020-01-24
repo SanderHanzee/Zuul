@@ -2,8 +2,8 @@ import java.util.*;
 import java.util.HashMap;
 import java.util.ArrayList;
 /**
- *  This class is the main class of the "Spongebob"  application. 
- *  "Spongebob" is a very simple, text based adventure game.  Users 
+ *  This class is the main class of the "World of Zuul" application. 
+ *  "World of Zuul" is a very simple, text based adventure game.  Users 
  *  can walk around some scenery. That's all. It should really be extended 
  *  to make it more interesting!
  * 
@@ -14,8 +14,8 @@ import java.util.ArrayList;
  *  rooms, creates the parser and starts the game.  It also evaluates and
  *  executes the commands that the parser returns.
  * 
- * @author  Sander Brands and Kevin de Graaf
- * @version 24.01.2020
+ * @author  Michael Kölling and David J. Barnes
+ * @version 2016.02.29
  */
 
 public class Game 
@@ -23,7 +23,9 @@ public class Game
     private Parser parser;
     private Room currentRoom;
     private Stack<Room> roomHistory;
-    ArrayList<Item> inventory = new ArrayList<Item>();  
+    private HashMap<String , Item> inventory;
+    private int playerWeight;
+    private int weightLimit; 
     /**
      * Create the game and initialise its internal map.
      */
@@ -32,7 +34,9 @@ public class Game
         createRooms();
         parser = new Parser();
         roomHistory = new Stack<Room>();
-
+        inventory = new HashMap<String, Item>(); 
+        playerWeight = 0;
+        weightLimit = 10; 
     }
 
     /**
@@ -44,12 +48,12 @@ public class Game
 
         // create the rooms
         spongebob = new Room("spongebob is the main place of the game");
-        patrick = new Room("Patrick house");
-        octo = new Room("Octo house");
+        patrick = new Room("Patrick huis");
+        octo = new Room("Octo huis");
         maatemmer = new Room("the Maatemmer");
-        sorbetpartybar = new Room("the Sorbetpartybar");
+        sorbetpartybar = new Room("the Sorbetparybar");
         krokantekrab = new Room("the Krokantekrab");
-        keukenkrokantekrab = new Room("Kitchen krokante krab");
+        keukenkrokantekrab = new Room("Kitchen krokantekrab");
 
         // geformuleerd op Noord - Oost - Zuid - West 
         // initialise room exits
@@ -70,8 +74,8 @@ public class Game
 
         krokantekrab.setExit("west", octo);
 
-        octo.setItem(new Item("keta"));
-
+       
+        
         currentRoom = spongebob;  // start game in spongebobs house
     }
 
@@ -171,70 +175,65 @@ public class Game
         return wantToQuit;
     }
 
+   
 
     private void dropItem(Command command) 
     {
-        if(!command.hasSecondWord()) {
-            // if there is no second word, we don't know where to go...
-            System.out.println("Get what?");
-            return;
-        }
-
-        String item = command.getSecondWord();
-
-        // Try to leave current room.
-        Item newItem = null;
-        int index =0;
-        for(int i=0; i < inventory.size(); i++){
-            if(inventory.get(i).getDescription().equals(item));{
-                newItem = inventory.get(i);
-                index = i;
+        {
+            if(!command.hasSecondWord()) {
+                // if there is no second word, we don't know what to drop...
+                System.out.println("Wait a minute drop what?");
+                return;
             }
-        }
-        if (newItem == null) {
-            System.out.println("that item is not in your inventory");
-        }
-        else {
-            inventory.remove(index);
-            currentRoom.setItem(new Item(item));
-            System.out.println("you dropped " + item);
 
+            String itemName = command.getSecondWord();
+            Item newItem = inventory.get(itemName);
+            if(newItem == null){
+                System.out.println("You cant drop something what you dont have");
+            }
+            else{
+                playerWeight = playerWeight - newItem.weight; 
+                inventory.remove(itemName);
+                currentRoom.setItem(newItem); 
+                System.out.println("Dropped: " + itemName); 
+            }
         }
     }
 
     private void getItem(Command command) 
     {
         if(!command.hasSecondWord()) {
-            // if there is no second word, we don't know where to go...
+            // if there is no second word, we don't know what to pickup..
             System.out.println("Get what?");
             return;
         }
 
-        String item = command.getSecondWord();
+        String itemName = command.getSecondWord();
+        Item newItem = currentRoom.getItem(itemName);
 
-        // Try to leave current room.
-        Item newItem = currentRoom.getItem(item);
-
-        if (newItem == null) {
-            System.out.println("That item is not in the room");
+        if(newItem == null){
+            System.out.println("There is no item in this room");
         }
-        else {
-            inventory.add(newItem);
-            currentRoom.removeItem(item);
-            System.out.println("you picked up " + item);
+        if(playerWeight + newItem.weight > weightLimit) 
+        {
+            System.out.println("You are to heavy to carry this item");
+        }
+        else{
+            playerWeight = playerWeight + newItem.weight;  
+            inventory.put(itemName, newItem);
+            currentRoom.removeItem(itemName);
+            System.out.println("Picked up: " + itemName); 
         }
     }
-
-    public void printInventory()
-    {
+     private void printInventory(){
         String output = "";
-        for(int i=0; i < inventory.size(); i++){
-            output += inventory.get(i).getDescription() + " ";  
+        for(String itemName : inventory.keySet()){
+            output += inventory.get(itemName).getItemName() + " Weight: " + inventory.get(itemName).getItemWeight() + "\n";
         }
-        System.out.println("You have "  + output );
-     
+        System.out.println("You are carrying:");
+        System.out.println(output); 
     }
-    // implementations of user commands:
+    
 
     /**
      * Print out some help information.
@@ -244,7 +243,7 @@ public class Game
     private void printHelp() 
     {
         System.out.println("You are lost. You are alone. You wander");
-        System.out.println("around at Spongebob.");
+        System.out.println("around at the university.");
         System.out.println();
         System.out.println("Your command words are:");
         parser.showCommands();
@@ -296,13 +295,18 @@ public class Game
 
     private void look()
     {
-        System.out.println("You are in " + currentRoom.getLongDescription());
+        System.out.println(currentRoom.getLongDescription());
+    }
+
+    private void eat()
+    {
+        System.out.println("You have eaten now and not hungry anymore");
     }
 
     private void goBack()
     {
         if (roomHistory.empty())
-        { System.out.println("You already went back");
+        { System.out.println("You already went back.");
         }
         else {
             currentRoom = roomHistory.pop();
