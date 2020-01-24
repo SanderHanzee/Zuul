@@ -79,7 +79,7 @@ public class Room
         for(String exit : keys) {
             returnString += " " + exit;
         }
-        returnString += "\nItems in de kamer:\n";
+        returnString += "\nItems in the room:\n";
         returnString += getRoomItems();
         return returnString;
 

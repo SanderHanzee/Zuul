@@ -2,8 +2,8 @@ import java.util.*;
 import java.util.HashMap;
 import java.util.ArrayList;
 /**
- *  This class is the main class of the "World of Zuul" application. 
- *  "World of Zuul" is a very simple, text based adventure game.  Users 
+ *  This class is the main class of the "Spongebob"  application. 
+ *  "Spongebob" is a very simple, text based adventure game.  Users 
  *  can walk around some scenery. That's all. It should really be extended 
  *  to make it more interesting!
  * 
@@ -14,8 +14,8 @@ import java.util.ArrayList;
  *  rooms, creates the parser and starts the game.  It also evaluates and
  *  executes the commands that the parser returns.
  * 
- * @author  Michael Kölling and David J. Barnes
- * @version 2016.02.29
+ * @author  Sander Brands and Kevin de Graaf
+ * @version 24.01.2020
  */
 
 public class Game 
@@ -44,12 +44,12 @@ public class Game
 
         // create the rooms
         spongebob = new Room("spongebob is the main place of the game");
-        patrick = new Room("in Patrick huis");
-        octo = new Room("in Octo huis");
-        maatemmer = new Room("in the Maatemmer");
-        sorbetpartybar = new Room("in the Sorbetparybar");
-        krokantekrab = new Room("in the Krokantekrab");
-        keukenkrokantekrab = new Room("Keuken krokante krab");
+        patrick = new Room("Patrick house");
+        octo = new Room("Octo house");
+        maatemmer = new Room("the Maatemmer");
+        sorbetpartybar = new Room("the Sorbetpartybar");
+        krokantekrab = new Room("the Krokantekrab");
+        keukenkrokantekrab = new Room("Kitchen krokante krab");
 
         // geformuleerd op Noord - Oost - Zuid - West 
         // initialise room exits
@@ -99,8 +99,8 @@ public class Game
     private void printWelcome()
     {
         System.out.println();
-        System.out.println("Welcome to the World of Zuul!");
-        System.out.println("World of Zuul is a new, incredibly boring adventure game.");
+        System.out.println("Welcome to the World of Spongebob!");
+        System.out.println("World of Spongebob is a new, incredibly boring adventure game.");
         System.out.println("Type '" + CommandWord.HELP + "' if you need help.");
         System.out.println();
         System.out.println(currentRoom.getLongDescription());
@@ -146,23 +146,23 @@ public class Game
             case QUIT:
             wantToQuit = quit(command);
             break;
-            
+
             case LOOK:
             look();
             break;
-            
+
             case BACK:
             goBack();
             break;
-            
+
             case INVENTORY:
             printInventory();
             break;
-            
+
             case GET:
             getItem(command);
             break;
-            
+
             case DROP:
             dropItem(command);
             break;
@@ -170,36 +170,6 @@ public class Game
         }
         return wantToQuit;
     }
-
-    /* 
-    if (commandWord.equals("help")) {
-    printHelp();
-    }
-    else if (commandWord.equals("go")) {
-    goRoom(command);
-    }
-    else if (commandWord.equals("look")) {
-    look();
-    }
-    else if (commandWord.equals("eat")) {
-    eat();
-    }
-    else if (commandWord.equals("quit")) {
-    wantToQuit = quit(command);
-    }
-    else if (commandWord.equals("back")) {
-    goBack();
-    }
-    else if(commandWord.equals("inventory")) {
-    printInventory();
-    }
-    else if(commandWord.equals("get")) {
-    getItem(command);
-    }
-    else if(commandWord.equals("drop")) {
-    dropItem(command);
-    }
-     */
 
 
     private void dropItem(Command command) 
@@ -261,8 +231,8 @@ public class Game
         for(int i=0; i < inventory.size(); i++){
             output += inventory.get(i).getDescription() + " ";  
         }
-        System.out.println("je hebt bij je");
-        System.out.println(output); 
+        System.out.println("You have "  + output );
+     
     }
     // implementations of user commands:
 
@@ -274,7 +244,7 @@ public class Game
     private void printHelp() 
     {
         System.out.println("You are lost. You are alone. You wander");
-        System.out.println("around at the university.");
+        System.out.println("around at Spongebob.");
         System.out.println();
         System.out.println("Your command words are:");
         parser.showCommands();
@@ -304,7 +274,7 @@ public class Game
             roomHistory.push(currentRoom);
             currentRoom = nextRoom;
 
-            System.out.println("You are " + currentRoom.getLongDescription());
+            System.out.println("You are " + currentRoom.getShortDescription());
         }
     }
 
@@ -326,18 +296,13 @@ public class Game
 
     private void look()
     {
-        System.out.println(currentRoom.getLongDescription());
-    }
-
-    private void eat()
-    {
-        System.out.println("You have eaten now and not hungry anymore");
+        System.out.println("You are in " + currentRoom.getLongDescription());
     }
 
     private void goBack()
     {
         if (roomHistory.empty())
-        { System.out.println("U bent al helemaal terug gegaan.");
+        { System.out.println("You already went back");
         }
         else {
             currentRoom = roomHistory.pop();
