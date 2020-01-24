@@ -1,4 +1,4 @@
-import java.util.ArrayList; 
+import java.util.HashMap; 
 /**
  * class player - geef hier een beschrijving van deze class
  *
@@ -7,14 +7,16 @@ import java.util.ArrayList;
  */
 public class player
 {
-    
+
     private int weightLimit;
-    ArrayList<Item> inventory = new ArrayList<Item>();
-    private int PlayerWeight; 
-    
+    HashMap<String,Item> inventory;
+    private int playerWeight; 
+
     public player()
     {
         weightLimit = 10;
+        playerWeight = 0;
+        inventory = new HashMap<String, Item>();  
     }
 }
 

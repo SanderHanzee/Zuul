@@ -23,7 +23,9 @@ public class Game
     private Parser parser;
     private Room currentRoom;
     private Stack<Room> roomHistory;
-    private HashMap<String , Item> inventory; 
+    private HashMap<String , Item> inventory;
+    private int playerWeight;
+    private int weightLimit; 
     /**
      * Create the game and initialise its internal map.
      */
@@ -33,6 +35,8 @@ public class Game
         parser = new Parser();
         roomHistory = new Stack<Room>();
         inventory = new HashMap<String, Item>(); 
+        playerWeight = 0;
+        weightLimit = 10; 
     }
 
     /**
@@ -71,7 +75,9 @@ public class Game
         krokantekrab.setExit("west", octo);
 
         octo.setItem(new Item("krik","might be used to ligt something heavy", 5));   
-
+        octo.setItem(new Item("keta","might be used to ligt something heavy", 5));
+        octo.setItem(new Item("pep","might be used to ligt something heavy", 5));
+        
         currentRoom = spongebob;  // start game in spongebobs house
     }
 
@@ -216,6 +222,7 @@ public class Game
                 System.out.println("You cant drop something what you dont have");
             }
             else{
+                playerWeight = playerWeight - newItem.weight; 
                 inventory.remove(itemName);
                 currentRoom.setItem(newItem); 
                 System.out.println("Dropped: " + itemName); 
@@ -237,7 +244,12 @@ public class Game
         if(newItem == null){
             System.out.println("There is no item in this room");
         }
+        if(playerWeight + newItem.weight > weightLimit) 
+        {
+            System.out.println("you are to heavy to carry this item");
+        }
         else{
+            playerWeight = playerWeight + newItem.weight;  
             inventory.put(itemName, newItem);
             currentRoom.removeItem(itemName);
             System.out.println("Picked up: " + itemName); 
