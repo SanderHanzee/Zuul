@@ -74,7 +74,7 @@ public class Game
 
         krokantekrab.setExit("west", octo);
 
-       
+
         
         currentRoom = spongebob;  // start game in spongebobs house
     }
@@ -175,7 +175,7 @@ public class Game
         return wantToQuit;
     }
 
-   
+
 
     private void dropItem(Command command) 
     {
@@ -216,7 +216,10 @@ public class Game
         }
         if(playerWeight + newItem.weight > weightLimit) 
         {
+<<<<<<< HEAD
             System.out.println("You are to heavy to carry this item");
+
+>>>>>>> eea3e0108cebba4d6ca4112781b4dbdbb81eaa95
         }
         else{
             playerWeight = playerWeight + newItem.weight;  
@@ -230,7 +233,10 @@ public class Game
         for(String itemName : inventory.keySet()){
             output += inventory.get(itemName).getItemName() + " Weight: " + inventory.get(itemName).getItemWeight() + "\n";
         }
+<<<<<<< HEAD
         System.out.println("You are carrying:");
+
+>>>>>>> eea3e0108cebba4d6ca4112781b4dbdbb81eaa95
         System.out.println(output); 
     }
     
