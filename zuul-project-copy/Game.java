@@ -25,7 +25,9 @@ public class Game
     private Stack<Room> roomHistory;
     private HashMap<String , Item> inventory;
     private int playerWeight;
-    private int weightLimit; 
+    private int weightLimit;
+    private int timer;
+    private int maxSteps; 
     /**
      * Create the game and initialise its internal map.
      */
@@ -37,6 +39,8 @@ public class Game
         inventory = new HashMap<String, Item>(); 
         playerWeight = 0;
         weightLimit = 10; 
+        timer = 0;
+        maxSteps = 3; 
     }
 
     /**
@@ -48,12 +52,12 @@ public class Game
 
         // create the rooms
         spongebob = new Room("spongebob is the main place of the game");
-        patrick = new Room("Patrick huis");
-        octo = new Room("Octo huis");
-        maatemmer = new Room("the Maatemmer");
-        sorbetpartybar = new Room("the Sorbetparybar");
-        krokantekrab = new Room("the Krokantekrab");
-        keukenkrokantekrab = new Room("Kitchen krokantekrab");
+        patrick = new Room("in Patrick huis");
+        octo = new Room("in Octo huis");
+        maatemmer = new Room("in the Maatemmer");
+        sorbetpartybar = new Room("in the Sorbetparybar");
+        krokantekrab = new Room("in the Krokantekrab");
+        keukenkrokantekrab = new Room("Keuken krokante krab");
 
         // geformuleerd op Noord - Oost - Zuid - West 
         // initialise room exits
@@ -74,8 +78,10 @@ public class Game
 
         krokantekrab.setExit("west", octo);
 
+        octo.setItem(new Item("krik","might be used to ligt something heavy", 5));   
+        octo.setItem(new Item("keta","might be used to ligt something heavy", 5));
+        octo.setItem(new Item("pep","might be used to ligt something heavy", 5));
 
-        
         currentRoom = spongebob;  // start game in spongebobs house
     }
 
@@ -103,8 +109,8 @@ public class Game
     private void printWelcome()
     {
         System.out.println();
-        System.out.println("Welcome to the World of Spongebob!");
-        System.out.println("World of Spongebob is a new, incredibly boring adventure game.");
+        System.out.println("Welcome to the World of Zuul!");
+        System.out.println("World of Zuul is a new, incredibly boring adventure game.");
         System.out.println("Type '" + CommandWord.HELP + "' if you need help.");
         System.out.println();
         System.out.println(currentRoom.getLongDescription());
@@ -175,7 +181,35 @@ public class Game
         return wantToQuit;
     }
 
-
+    /* 
+    if (commandWord.equals("help")) {
+    printHelp();
+    }
+    else if (commandWord.equals("go")) {
+    goRoom(command);
+    }
+    else if (commandWord.equals("look")) {
+    look();
+    }
+    else if (commandWord.equals("eat")) {
+    eat();
+    }
+    else if (commandWord.equals("quit")) {
+    wantToQuit = quit(command);
+    }
+    else if (commandWord.equals("back")) {
+    goBack();
+    }
+    else if(commandWord.equals("inventory")) {
+    printInventory();
+    }
+    else if(commandWord.equals("get")) {
+    getItem(command);
+    }
+    else if(commandWord.equals("drop")) {
+    dropItem(command);
+    }
+     */
 
     private void dropItem(Command command) 
     {
@@ -216,10 +250,7 @@ public class Game
         }
         if(playerWeight + newItem.weight > weightLimit) 
         {
-<<<<<<< HEAD
-            System.out.println("You are to heavy to carry this item");
-
->>>>>>> eea3e0108cebba4d6ca4112781b4dbdbb81eaa95
+            System.out.println("you are to heavy to carry this item");
         }
         else{
             playerWeight = playerWeight + newItem.weight;  
@@ -228,18 +259,15 @@ public class Game
             System.out.println("Picked up: " + itemName); 
         }
     }
-     private void printInventory(){
+
+    private void printInventory(){
         String output = "";
         for(String itemName : inventory.keySet()){
             output += inventory.get(itemName).getItemName() + " Weight: " + inventory.get(itemName).getItemWeight() + "\n";
         }
-<<<<<<< HEAD
-        System.out.println("You are carrying:");
-
->>>>>>> eea3e0108cebba4d6ca4112781b4dbdbb81eaa95
+        System.out.println("you are carrying:");
         System.out.println(output); 
     }
-    
 
     /**
      * Print out some help information.
@@ -261,25 +289,33 @@ public class Game
      */
     private void goRoom(Command command) 
     {
-        if(!command.hasSecondWord()) {
-            // if there is no second word, we don't know where to go...
-            System.out.println("Go where?");
-            return;
+        timer = timer +1 ; 
+        if(timer > maxSteps){
+            System.out.println("you took to many steps: GAME OVER");
+            System.out.println("type quit to end the game");   
         }
+        else {    
+            if(!command.hasSecondWord()) {
+                // if there is no second word, we don't know where to go...
+                System.out.println("Go where?");
+                return;
+            }
 
-        String direction = command.getSecondWord();
+            String direction = command.getSecondWord();
 
-        // Try to leave current room.
-        Room nextRoom = currentRoom.getExit(direction);
+            // Try to leave current room.
+            Room nextRoom = currentRoom.getExit(direction);
 
-        if (nextRoom == null) {
-            System.out.println("There is no door!");
-        }
-        else {
-            roomHistory.push(currentRoom);
-            currentRoom = nextRoom;
+            if (nextRoom == null) {
+                System.out.println("There is no door!");
+            }
+            else {
+                roomHistory.push(currentRoom);
+                currentRoom = nextRoom;
 
-            System.out.println("You are " + currentRoom.getShortDescription());
+                System.out.println("You are " + currentRoom.getLongDescription());
+                System.out.println("you have " + (maxSteps - timer) + " steps left" );
+            }
         }
     }
 
@@ -312,7 +348,7 @@ public class Game
     private void goBack()
     {
         if (roomHistory.empty())
-        { System.out.println("You already went back.");
+        { System.out.println("U bent al helemaal terug gegaan.");
         }
         else {
             currentRoom = roomHistory.pop();

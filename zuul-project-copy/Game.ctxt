@@ -30,6 +30,7 @@ comment5.target=boolean\ processCommand(Command)
 comment5.text=\r\n\ Given\ a\ command,\ process\ (that\ is\:\ execute)\ the\ command.\r\n\ @param\ command\ The\ command\ to\ be\ processed.\r\n\ @return\ true\ If\ the\ command\ ends\ the\ game,\ false\ otherwise.\r\n
 comment6.params=command
 comment6.target=void\ dropItem(Command)
+comment6.text=\ \r\n\ \ \ \ if\ (commandWord.equals("help"))\ {\r\n\ \ \ \ printHelp();\r\n\ \ \ \ }\r\n\ \ \ \ else\ if\ (commandWord.equals("go"))\ {\r\n\ \ \ \ goRoom(command);\r\n\ \ \ \ }\r\n\ \ \ \ else\ if\ (commandWord.equals("look"))\ {\r\n\ \ \ \ look();\r\n\ \ \ \ }\r\n\ \ \ \ else\ if\ (commandWord.equals("eat"))\ {\r\n\ \ \ \ eat();\r\n\ \ \ \ }\r\n\ \ \ \ else\ if\ (commandWord.equals("quit"))\ {\r\n\ \ \ \ wantToQuit\ \=\ quit(command);\r\n\ \ \ \ }\r\n\ \ \ \ else\ if\ (commandWord.equals("back"))\ {\r\n\ \ \ \ goBack();\r\n\ \ \ \ }\r\n\ \ \ \ else\ if(commandWord.equals("inventory"))\ {\r\n\ \ \ \ printInventory();\r\n\ \ \ \ }\r\n\ \ \ \ else\ if(commandWord.equals("get"))\ {\r\n\ \ \ \ getItem(command);\r\n\ \ \ \ }\r\n\ \ \ \ else\ if(commandWord.equals("drop"))\ {\r\n\ \ \ \ dropItem(command);\r\n\ \ \ \ }\r\n
 comment7.params=command
 comment7.target=void\ getItem(Command)
 comment8.params=
