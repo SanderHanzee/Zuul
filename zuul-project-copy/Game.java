@@ -80,7 +80,7 @@ public class Game
 
         octo.setItem(new Item("krik","might be used to ligt something heavy", 5));   
         octo.setItem(new Item("keta","might be used to ligt something heavy", 5));
-        octo.setItem(new Item("pep","might be used to ligt something heavy", 5));
+        octo.setItem(new Item("cookie","eat to gain extra moves", 0)); 
 
         currentRoom = spongebob;  // start game in spongebobs house
     }
@@ -113,7 +113,7 @@ public class Game
         System.out.println("World of Zuul is a new, incredibly boring adventure game.");
         System.out.println("Type '" + CommandWord.HELP + "' if you need help.");
         System.out.println();
-        System.out.println(currentRoom.getLongDescription());
+        System.out.println(currentRoom.getShortDescription());
 
     }
 
@@ -176,7 +176,10 @@ public class Game
             case DROP:
             dropItem(command);
             break;
-
+            
+            case EAT:  
+            eat();
+            break;
         }
         return wantToQuit;
     }
@@ -213,7 +216,11 @@ public class Game
 
     private void dropItem(Command command) 
     {
-        {
+        if(timer >= maxSteps){
+            System.out.println("you took to many steps: GAME OVER");
+            System.out.println("type quit to end the game");   
+        }
+        else {    
             if(!command.hasSecondWord()) {
                 // if there is no second word, we don't know what to drop...
                 System.out.println("Wait a minute drop what?");
@@ -236,37 +243,51 @@ public class Game
 
     private void getItem(Command command) 
     {
-        if(!command.hasSecondWord()) {
-            // if there is no second word, we don't know what to pickup..
-            System.out.println("Get what?");
-            return;
+        if(timer >= maxSteps){
+            System.out.println("you took to many steps: GAME OVER");
+            System.out.println("type quit to end the game");   
         }
+        else {    
+            if(!command.hasSecondWord()) {
+                // if there is no second word, we don't know what to pickup..
+                System.out.println("Get what?");
+                return;
+            }
 
-        String itemName = command.getSecondWord();
-        Item newItem = currentRoom.getItem(itemName);
+            String itemName = command.getSecondWord();
+            Item newItem = currentRoom.getItem(itemName);
 
-        if(newItem == null){
-            System.out.println("There is no item in this room");
-        }
-        if(playerWeight + newItem.weight > weightLimit) 
-        {
-            System.out.println("you are to heavy to carry this item");
-        }
-        else{
-            playerWeight = playerWeight + newItem.weight;  
-            inventory.put(itemName, newItem);
-            currentRoom.removeItem(itemName);
-            System.out.println("Picked up: " + itemName); 
+            if(newItem == null){
+                System.out.println("There is no item in this room");
+            }
+            else{
+                if(playerWeight + newItem.weight > weightLimit) 
+                {
+                    System.out.println("you are to heavy to carry this item");
+                }
+                else{
+                    playerWeight = playerWeight + newItem.weight;  
+                    inventory.put(itemName, newItem);
+                    currentRoom.removeItem(itemName);
+                    System.out.println("Picked up: " + itemName); 
+                }
+            }
         }
     }
 
     private void printInventory(){
-        String output = "";
-        for(String itemName : inventory.keySet()){
-            output += inventory.get(itemName).getItemName() + " Weight: " + inventory.get(itemName).getItemWeight() + "\n";
+        if(timer >= maxSteps){
+            System.out.println("you took to many steps: GAME OVER");
+            System.out.println("type quit to end the game");   
         }
-        System.out.println("you are carrying:");
-        System.out.println(output); 
+        else {    
+            String output = "";
+            for(String itemName : inventory.keySet()){
+                output += inventory.get(itemName).getItemName() + " Weight: " + inventory.get(itemName).getItemWeight() + "\n";
+            }
+            System.out.println("you are carrying:");
+            System.out.println(output); 
+        }
     }
 
     /**
@@ -275,12 +296,17 @@ public class Game
      * command words.
      */
     private void printHelp() 
-    {
-        System.out.println("You are lost. You are alone. You wander");
-        System.out.println("around at the university.");
-        System.out.println();
-        System.out.println("Your command words are:");
-        parser.showCommands();
+    {if(timer > maxSteps){
+            System.out.println("you took to many steps: GAME OVER");
+            System.out.println("type quit to end the game");   
+        }
+        else {    
+            System.out.println("You are lost. You are alone. You wander");
+            System.out.println("around at the university.");
+            System.out.println();
+            System.out.println("Your command words are:");
+            parser.showCommands();
+        }
     }
 
     /** 
@@ -290,9 +316,10 @@ public class Game
     private void goRoom(Command command) 
     {
         timer = timer +1 ; 
-        if(timer > maxSteps){
+        if(timer >= maxSteps){
             System.out.println("you took to many steps: GAME OVER");
-            System.out.println("type quit to end the game");   
+            System.out.println("type quit to quit the game"); 
+
         }
         else {    
             if(!command.hasSecondWord()) {
@@ -313,7 +340,7 @@ public class Game
                 roomHistory.push(currentRoom);
                 currentRoom = nextRoom;
 
-                System.out.println("You are " + currentRoom.getLongDescription());
+                System.out.println("You are " + currentRoom.getShortDescription());
                 System.out.println("you have " + (maxSteps - timer) + " steps left" );
             }
         }
@@ -337,22 +364,49 @@ public class Game
 
     private void look()
     {
-        System.out.println(currentRoom.getLongDescription());
+        if(timer >= maxSteps){
+            System.out.println("you took to many steps: GAME OVER");
+            System.out.println("type quit to quit the game"); 
+
+        }
+        else{
+            System.out.println(currentRoom.getLongDescription());
+        }
     }
 
-    private void eat()
-    {
-        System.out.println("You have eaten now and not hungry anymore");
+    private void eat(){
+        String eatOutput = "you dont have any food in your inventory";
+        if(timer >= maxSteps){
+            System.out.println("you took to many steps: GAME OVER");
+            System.out.println("type quit to quit the game"); 
+
+        }
+        else{
+            for(String itemName : inventory.keySet()){
+                if(itemName.equals("cookie")){
+                    maxSteps = maxSteps + 5;
+                    eatOutput = "you ate the cookie and gained 5 steps";
+                }
+            }
+        }
+        System.out.println(eatOutput);
     }
 
     private void goBack()
     {
-        if (roomHistory.empty())
-        { System.out.println("U bent al helemaal terug gegaan.");
+        if(timer >= maxSteps){
+            System.out.println("you took to many steps: GAME OVER");
+            System.out.println("type quit to quit the game"); 
+
         }
-        else {
-            currentRoom = roomHistory.pop();
-            System.out.println(currentRoom.getLongDescription());
+        else{
+            if (roomHistory.empty())
+            { System.out.println("U bent al helemaal terug gegaan.");
+            }
+            else {
+                currentRoom = roomHistory.pop();
+                System.out.println(currentRoom.getLongDescription());
+            }
         }
     }
 }

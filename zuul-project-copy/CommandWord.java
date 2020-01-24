@@ -24,7 +24,11 @@ public enum CommandWord
 
     GET("get"), 
 
-    DROP("drop");
+    DROP("drop"),
+    
+    EAT("eat");
+    
+        
     
     // De tekst van de opdracht.
    private String commandString;
