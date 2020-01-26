@@ -1,8 +1,0 @@
-#BlueJ class context
-comment0.target=player
-comment0.text=\r\n\ class\ player\ -\ geef\ hier\ een\ beschrijving\ van\ deze\ class\r\n\r\n\ @author\ (jouw\ naam)\r\n\ @version\ (versie\ nummer\ of\ datum)\r\n
-comment1.params=
-comment1.target=player()
-comment2.params=
-comment2.target=Room\ getCurrentRoom()
-numComments=3
